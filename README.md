@@ -49,10 +49,10 @@ http://localhost:3000
 1. 点击 Deploy to Cloudflare。
 2. 按 Cloudflare 页面提示完成 GitHub/GitLab 授权和部署，Cloudflare 会自动克隆项目代码到你的账号下。
 
-如果 Cloudflare 页面要求填写构建和部署命令，保持默认即可：
+如果 Cloudflare 页面要求填写构建和部署命令，建议使用：
 
 - 构建命令：留空
-- 部署命令：`npx wrangler deploy`
+- 部署命令：`npm run deploy`
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ulimit65535/taygedo-daily-attendance)
 
@@ -65,7 +65,13 @@ npm install
 npm run deploy
 ```
 
-如果不是通过 Deploy to Cloudflare 按钮部署，Wrangler 会根据 `wrangler.jsonc` 里的 `TAYGEDO_KV` 绑定自动创建 KV namespace，并在本地部署时把实际 ID 写回配置。通过 Deploy to Cloudflare 按钮部署时，Cloudflare 也会自动创建所需 KV；资源 ID 可在 Cloudflare Dashboard 里查看。
+部署脚本会先尝试复用已有 KV：
+
+1. 如果设置了 `TAYGEDO_KV_ID`，会直接把这个 namespace ID 绑定到 `TAYGEDO_KV`。
+2. 如果没有设置 ID，会查询当前 Cloudflare 账号下是否存在名为 `taygedo-daily-attendance-taygedo-kv` 的 KV namespace；存在就复用它。
+3. 如果不存在，Wrangler 才会按 `wrangler.jsonc` 里的 `TAYGEDO_KV` 绑定自动创建 KV namespace。
+
+解析后的临时配置会写入 `.wrangler/resolved.jsonc`，该目录已在 `.gitignore` 中忽略，不会把你的 Cloudflare 资源 ID 提交到仓库。如果你的 KV namespace 使用了自定义名称，可以在部署环境变量里设置 `TAYGEDO_KV_NAME`；如果已经知道 ID，推荐直接设置 `TAYGEDO_KV_ID`。
 
 ```bash
 npm run deploy

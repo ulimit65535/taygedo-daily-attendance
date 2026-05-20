@@ -7,7 +7,7 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "cf:dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "deploy": "node scripts/resolve-kv-binding.mjs && wrangler deploy --config .wrangler/resolved.jsonc",
     "check": "for f in src/*.js public/*.js; do node --check \"$f\"; done"
   },
   "devDependencies": {
