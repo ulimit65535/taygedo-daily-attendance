@@ -47,8 +47,12 @@ http://localhost:3000
 点击下面按钮后，Cloudflare 会从本仓库读取代码，并在你的 GitHub/GitLab 账号下克隆出一份新仓库，再创建 Worker。
 
 1. 点击 Deploy to Cloudflare。
-2. 按 Cloudflare 页面提示完成 GitHub/GitLab 授权和部署。
-3. 如果你想从自己的 Fork 部署，把页面里的 Git 存储库 URL 手动改成你的公开 Fork 仓库地址。
+2. 按 Cloudflare 页面提示完成 GitHub/GitLab 授权和部署，Cloudflare 会自动克隆项目代码到你的账号下。
+
+如果 Cloudflare 页面要求填写构建和部署命令，保持默认即可：
+
+- 构建命令：留空
+- 部署命令：`npx wrangler deploy`
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ulimit65535/taygedo-daily-attendance)
 
