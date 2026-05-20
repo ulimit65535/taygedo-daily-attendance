@@ -39,7 +39,11 @@ http://localhost:3000
 
 本项目参考 `skland-daily-attendance` 的 Workers 部署方式，已包含 `wrangler.jsonc`、Workers 入口和 KV 持久化存储。
 
-发布到 GitHub 或 GitLab 后，把下面链接中的仓库地址替换成你的公开仓库地址：
+使用一键部署前，建议先 Fork 本仓库到自己的 GitHub 账号下。Cloudflare 会从你的 Fork 仓库读取代码并创建 Worker，后续更新也可以在自己的仓库里维护。
+
+1. 点击页面右上角的 Fork 按钮，将仓库 fork 到你的账号下。
+2. 打开你的 fork 仓库，把下面链接中的仓库地址替换成你的公开仓库地址。
+3. 点击 Deploy to Cloudflare，按 Cloudflare 页面提示完成授权和部署。
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/your-account/taygedo)
 
