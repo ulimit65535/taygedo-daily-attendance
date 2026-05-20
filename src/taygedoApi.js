@@ -315,7 +315,7 @@ function laohuSign(data) {
 
 function aesBase64Encode(value) {
   const key = Buffer.from(LAOHU_SECRET.slice(-16), 'utf8')
-  const cipher = createCipheriv('aes-128-ecb', key, null)
+  const cipher = createCipheriv('aes-128-ecb', key, new Uint8Array())
   cipher.setAutoPadding(true)
   return Buffer.concat([cipher.update(value, 'utf8'), cipher.final()]).toString('base64')
 }
