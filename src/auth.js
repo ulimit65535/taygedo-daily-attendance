@@ -1,7 +1,8 @@
 const SESSION_COOKIE = 'taygedo_session'
 const REQUEST_HEADER = 'x-taygedo-requested-with'
 const REQUEST_HEADER_VALUE = 'fetch'
-const PASSWORD_ITERATIONS = 310_000
+const PASSWORD_ITERATIONS = 100_000
+const MAX_PBKDF2_ITERATIONS = 100_000
 const PASSWORD_BYTES = 32
 const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60
 const MAX_FAILED_ATTEMPTS = 5
@@ -256,11 +257,20 @@ async function verifyPassword(config, password) {
     return false
   }
 
-  const candidate = await derivePasswordHash(password, passwordConfig.salt, Number(passwordConfig.iterations))
+  const iterations = Number(passwordConfig.iterations)
+  if (!isSupportedPbkdf2IterationCount(iterations)) {
+    return false
+  }
+
+  const candidate = await derivePasswordHash(password, passwordConfig.salt, iterations)
   return timingSafeEqual(base64UrlToBytes(candidate), base64UrlToBytes(passwordConfig.hash))
 }
 
 async function derivePasswordHash(password, salt, iterations) {
+  if (!isSupportedPbkdf2IterationCount(iterations)) {
+    throw httpError(400, `PBKDF2 迭代次数需在 1-${MAX_PBKDF2_ITERATIONS} 之间`)
+  }
+
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
     textEncoder.encode(password),
@@ -279,6 +289,10 @@ async function derivePasswordHash(password, salt, iterations) {
     PASSWORD_BYTES * 8,
   )
   return bytesToBase64Url(new Uint8Array(bits))
+}
+
+function isSupportedPbkdf2IterationCount(iterations) {
+  return Number.isSafeInteger(iterations) && iterations >= 1 && iterations <= MAX_PBKDF2_ITERATIONS
 }
 
 async function signSession(config, payloadText) {
