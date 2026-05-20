@@ -310,9 +310,9 @@ input:focus {
 
 .account-edit {
   display: grid;
-  grid-template-columns: minmax(160px, 260px) minmax(0, 1fr);
+  grid-template-columns: 1fr;
   gap: 12px;
-  align-items: end;
+  align-items: start;
 }
 
 .pill {

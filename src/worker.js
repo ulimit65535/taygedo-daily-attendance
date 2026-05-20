@@ -95,8 +95,8 @@ async function handleRequest(request, env) {
     const phone = requireString(body, 'phone')
     const captcha = requireString(body, 'captcha')
     const deviceId = requireString(body, 'deviceId')
-    const accountId = requireString(body, 'accountId')
-    const accountName = optionalString(body, 'accountName') ?? accountId
+    const accountId = phone
+    const accountName = phone
     const gameIds = normalizeGameIds(body.gameIds)
 
     await api.checkCaptcha(phone, captcha, deviceId)

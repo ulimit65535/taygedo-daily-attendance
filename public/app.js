@@ -36,8 +36,6 @@ const els = {
   phone: document.querySelector('#phone'),
   deviceId: document.querySelector('#deviceId'),
   captcha: document.querySelector('#captcha'),
-  accountId: document.querySelector('#accountId'),
-  accountName: document.querySelector('#accountName'),
   loginGames: document.querySelector('#loginGames'),
   sendCodeBtn: document.querySelector('#sendCodeBtn'),
   completeLoginBtn: document.querySelector('#completeLoginBtn'),
@@ -135,8 +133,6 @@ els.completeLoginBtn.addEventListener('click', async () => {
         phone: els.phone.value,
         captcha: els.captcha.value,
         deviceId: els.deviceId.value,
-        accountId: els.accountId.value,
-        accountName: els.accountName.value || els.accountId.value,
         gameIds: selectedGames(els.loginGames),
       },
     })
@@ -169,7 +165,6 @@ els.accountsList.addEventListener('click', async (event) => {
       const data = await api(`/api/accounts/${encodeURIComponent(id)}`, {
         method: 'PATCH',
         body: {
-          name: item.querySelector('[data-field="name"]').value,
           gameIds: selectedGames(item.querySelector('[data-field="games"]')),
         },
       })
@@ -285,7 +280,6 @@ function renderAccounts() {
         <div>
           <h3>${escapeHtml(account.name)}</h3>
           <div class="account-meta">
-            <span>ID ${escapeHtml(account.id)}</span>
             <span>UID ${escapeHtml(account.uid)}</span>
             <span>角色 ${escapeHtml(account.roleName || account.roleId || '未记录')}</span>
             <span>Token ${account.hasAccessToken ? '已保存' : '待刷新'}</span>
@@ -294,10 +288,6 @@ function renderAccounts() {
         <span class="pill">${escapeHtml(account.gameIds.length)} 个游戏</span>
       </div>
       <div class="account-edit">
-        <label>
-          <span>账号名称</span>
-          <input data-field="name" value="${escapeAttr(account.name)}">
-        </label>
         <div>
           <div class="field-title">签到游戏</div>
           <div class="game-grid" data-field="games">
