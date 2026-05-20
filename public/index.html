@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>塔吉多本地签到</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <section id="authShell" class="auth-shell" hidden>
+      <form id="setupForm" class="auth-card" hidden>
+        <div>
+          <h1>初始化管理账号</h1>
+          <p>首次公开访问前设置管理员登录。</p>
+        </div>
+        <label>
+          <span>用户名</span>
+          <input id="setupUsername" autocomplete="username" value="admin" maxlength="64">
+        </label>
+        <label>
+          <span>密码</span>
+          <input id="setupPassword" type="password" autocomplete="new-password" minlength="12" maxlength="256">
+        </label>
+        <label>
+          <span>确认密码</span>
+          <input id="setupPasswordConfirm" type="password" autocomplete="new-password" minlength="12" maxlength="256">
+        </label>
+        <button class="button primary" type="submit">创建并登录</button>
+      </form>
+
+      <form id="authLoginForm" class="auth-card" hidden>
+        <div>
+          <h1>登录塔吉多签到</h1>
+          <p>请输入管理员账号。</p>
+        </div>
+        <label>
+          <span>用户名</span>
+          <input id="authUsername" autocomplete="username">
+        </label>
+        <label>
+          <span>密码</span>
+          <input id="authPassword" type="password" autocomplete="current-password" maxlength="256">
+        </label>
+        <button class="button primary" type="submit">登录</button>
+      </form>
+    </section>
+
+    <div id="appShell" hidden>
+      <header class="topbar">
+        <div>
+          <h1>塔吉多本地签到</h1>
+          <p id="statusLine">加载中</p>
+        </div>
+        <div class="top-actions">
+          <button id="refreshBtn" class="button ghost" type="button">刷新</button>
+          <button id="logoutBtn" class="button ghost" type="button">退出</button>
+          <button id="runAllBtn" class="button primary" type="button">立即签到全部</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>定时</h2>
+            <span id="nextRunText" class="hint">未开启</span>
+          </div>
+          <form id="scheduleForm" class="form compact-form">
+            <label class="check-row">
+              <input id="scheduleEnabled" type="checkbox">
+              <span>每天自动签到</span>
+            </label>
+            <label>
+              <span>时间</span>
+              <input id="scheduleTime" type="time" value="09:00">
+            </label>
+            <label>
+              <span>重试次数</span>
+              <input id="maxRetries" type="number" min="1" max="10" value="3">
+            </label>
+            <button class="button" type="submit">保存定时</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>登录账号</h2>
+            <span class="hint">短信验证码</span>
+          </div>
+          <form id="loginForm" class="form">
+            <div class="grid two">
+              <label>
+                <span>手机号</span>
+                <input id="phone" autocomplete="tel" placeholder="13800138000">
+              </label>
+              <label>
+                <span>设备 ID</span>
+                <input id="deviceId" placeholder="自动生成">
+              </label>
+            </div>
+            <div class="button-row">
+              <button id="sendCodeBtn" class="button" type="button">发送验证码</button>
+            </div>
+            <div class="grid three">
+              <label>
+                <span>验证码</span>
+                <input id="captcha" autocomplete="one-time-code" placeholder="123456">
+              </label>
+              <label>
+                <span>账号 ID</span>
+                <input id="accountId" placeholder="main">
+              </label>
+              <label>
+                <span>账号名称</span>
+                <input id="accountName" placeholder="主账号">
+              </label>
+            </div>
+            <div>
+              <div class="field-title">签到游戏</div>
+              <div id="loginGames" class="game-grid"></div>
+            </div>
+            <button id="completeLoginBtn" class="button primary" type="button">登录并保存</button>
+          </form>
+        </section>
+
+        <section class="panel accounts-panel">
+          <div class="panel-head">
+            <h2>账号</h2>
+            <span id="accountCount" class="hint">0 个</span>
+          </div>
+          <div id="accountsList" class="accounts-list"></div>
+        </section>
+
+        <section class="panel logs-panel">
+          <div class="panel-head">
+            <h2>日志</h2>
+            <button id="refreshLogsBtn" class="button ghost small" type="button">刷新日志</button>
+          </div>
+          <div id="logsList" class="logs-list"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" hidden></div>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
