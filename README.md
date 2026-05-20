@@ -65,10 +65,10 @@ npm install
 npm run deploy
 ```
 
-如果不是通过 Deploy to Cloudflare 按钮部署，需要先创建 KV namespace，并把 `wrangler.jsonc` 里的 `kv_namespaces[0].id` 替换成实际 ID。
+如果不是通过 Deploy to Cloudflare 按钮部署，Wrangler 会根据 `wrangler.jsonc` 里的 `TAYGEDO_KV` 绑定自动创建 KV namespace，并在本地部署时把实际 ID 写回配置。通过 Deploy to Cloudflare 按钮部署时，Cloudflare 也会自动创建所需 KV；资源 ID 可在 Cloudflare Dashboard 里查看。
 
 ```bash
-npx wrangler kv namespace create TAYGEDO_KV
+npm run deploy
 ```
 
 Workers 定时触发器每分钟唤醒一次，代码会按页面里配置的时间在 `Asia/Shanghai` 时区每天最多执行一次签到。这样可以继续通过页面修改时间，同时避免在 Workers 里使用长驻定时器。

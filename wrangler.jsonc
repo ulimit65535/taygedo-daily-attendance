@@ -14,8 +14,7 @@
   },
   "kv_namespaces": [
     {
-      "binding": "TAYGEDO_KV",
-      "id": "00000000000000000000000000000000"
+      "binding": "TAYGEDO_KV"
     }
   ],
   "triggers": {
