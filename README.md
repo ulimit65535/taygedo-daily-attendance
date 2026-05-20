@@ -54,6 +54,8 @@ http://localhost:3000
 - 构建命令：留空
 - 部署命令：`npm run deploy`
 
+如果页面仍然使用默认部署命令 `npx wrangler deploy`，项目也会在 Cloudflare 的 `bun install` / `npm install` 阶段自动解析已有 KV，并把本次构建容器里的 `wrangler.jsonc` 临时补上 namespace ID。
+
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ulimit65535/taygedo-daily-attendance)
 
 部署后第一次访问 Worker 域名，会进入管理员账号初始化页。这个项目不使用 Cloudflare 环境变量或 Secrets：账号数据、登录配置、日志和定时状态都保存在绑定名为 `TAYGEDO_KV` 的 Cloudflare KV 中。
@@ -72,6 +74,8 @@ npm run deploy
 3. 如果不存在，Wrangler 才会按 `wrangler.jsonc` 里的 `TAYGEDO_KV` 绑定自动创建 KV namespace。
 
 解析后的临时配置会写入 `.wrangler/resolved.jsonc`，该目录已在 `.gitignore` 中忽略，不会把你的 Cloudflare 资源 ID 提交到仓库。如果你的 KV namespace 使用了自定义名称，可以在部署环境变量里设置 `TAYGEDO_KV_NAME`；如果已经知道 ID，推荐直接设置 `TAYGEDO_KV_ID`。
+
+在 Cloudflare Workers Builds 里，`WORKERS_CI=1` 时还会在依赖安装阶段自动把解析结果写入本次构建容器的 `wrangler.jsonc`，用于兼容默认的 `npx wrangler deploy` 部署命令。
 
 ```bash
 npm run deploy

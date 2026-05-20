@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -7,6 +7,11 @@ const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const sourceConfigPath = resolve(rootDir, 'wrangler.jsonc')
 const resolvedConfigPath = resolve(rootDir, '.wrangler', 'resolved.jsonc')
 const bindingName = process.env.TAYGEDO_KV_BINDING || 'TAYGEDO_KV'
+const writeSourceOnWorkersCi = process.argv.includes('--write-source-on-workers-ci')
+
+if (writeSourceOnWorkersCi && process.env.WORKERS_CI !== '1') {
+  process.exit(0)
+}
 
 const sourceConfig = parseJsonc(readFileSync(sourceConfigPath, 'utf8'))
 const namespaceName =
@@ -34,9 +39,11 @@ if (namespaceId) {
   console.log(`No existing KV namespace named "${namespaceName}" was found. Wrangler may create it during deploy.`)
 }
 
-mkdirSync(dirname(resolvedConfigPath), { recursive: true })
-writeFileSync(resolvedConfigPath, `${JSON.stringify(resolvedConfig, null, 2)}\n`)
-console.log(`Wrote ${resolvedConfigPath}.`)
+if (writeSourceOnWorkersCi) {
+  writeConfig(sourceConfigPath, resolvedConfig)
+} else {
+  writeConfig(resolvedConfigPath, resolvedConfig)
+}
 
 async function findExistingNamespaceId(title) {
   const namespaces = (await listNamespacesFromApi()) || listNamespacesFromWrangler()
@@ -92,8 +99,9 @@ async function listNamespacesFromApi() {
 
 function listNamespacesFromWrangler() {
   try {
+    const wrangler = resolveWranglerCommand()
     const output = execFileSync(
-      'wrangler',
+      wrangler,
       [
         'kv',
         'namespace',
@@ -113,6 +121,23 @@ function listNamespacesFromWrangler() {
     console.warn(`Wrangler namespace lookup failed: ${message}`)
     return null
   }
+}
+
+function resolveWranglerCommand() {
+  const localBin = resolve(
+    rootDir,
+    'node_modules',
+    '.bin',
+    process.platform === 'win32' ? 'wrangler.cmd' : 'wrangler',
+  )
+
+  return existsSync(localBin) ? localBin : 'wrangler'
+}
+
+function writeConfig(path, config) {
+  mkdirSync(dirname(path), { recursive: true })
+  writeFileSync(path, `${JSON.stringify(config, null, 2)}\n`)
+  console.log(`Wrote ${path}.`)
 }
 
 function parseWranglerNamespaceList(output) {

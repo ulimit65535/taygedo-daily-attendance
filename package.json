@@ -8,6 +8,7 @@
     "dev": "node --watch src/server.js",
     "cf:dev": "wrangler dev",
     "deploy": "node scripts/resolve-kv-binding.mjs && wrangler deploy --config .wrangler/resolved.jsonc",
+    "postinstall": "node scripts/resolve-kv-binding.mjs --write-source-on-workers-ci",
     "check": "for f in src/*.js public/*.js; do node --check \"$f\"; done"
   },
   "devDependencies": {
