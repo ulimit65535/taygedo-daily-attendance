@@ -2,6 +2,11 @@
 
 一个可本地运行、也可部署到 Cloudflare Workers 的 Web 项目，用来管理塔吉多 APP 多账号登录、定时签到、每账号游戏配置和签到日志。
 
+## 参考
+
+- 签到逻辑参考了 [zzstar101/taygedo-auto-attendance](https://github.com/zzstar101/taygedo-auto-attendance)。
+- Cloudflare Workers 部署方式参考了 [AEtherside/skland-daily-attendance](https://github.com/AEtherside/skland-daily-attendance)。
+
 ## 功能
 
 - Web 管理界面带管理员登录校验
@@ -37,7 +42,7 @@ http://localhost:3000
 
 ## Cloudflare Workers 一键部署
 
-本项目参考 `skland-daily-attendance` 的 Workers 部署方式，已包含 `wrangler.jsonc`、Workers 入口和 KV 持久化存储。
+本项目参考 [AEtherside/skland-daily-attendance](https://github.com/AEtherside/skland-daily-attendance) 的 Workers 部署方式，已包含 `wrangler.jsonc`、Workers 入口和 KV 持久化存储。
 
 点击下面按钮后，Cloudflare 会从本仓库读取代码，并在你的 GitHub/GitLab 账号下克隆出一份新仓库，再创建 Worker。
 
