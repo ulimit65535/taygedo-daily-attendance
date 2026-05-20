@@ -6,7 +6,7 @@ const LAOHU_SECRET = '89155cc4e8634ec5b1b6364013b23e3e'
 
 export class TaygedoApi {
   constructor(options = {}) {
-    this.fetchImpl = options.fetch ?? fetch
+    this.fetchImpl = options.fetch ?? globalThis.fetch.bind(globalThis)
   }
 
   async sendCaptcha(phone, deviceId) {
