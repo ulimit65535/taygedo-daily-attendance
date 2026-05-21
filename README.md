@@ -60,11 +60,30 @@ http://localhost:3000
 
 部署后第一次访问 Worker 域名，会进入管理员账号初始化页。这个项目不使用 Cloudflare 环境变量或 Secrets：账号数据、登录配置、日志和定时状态都保存在绑定名为 `TAYGEDO_KV` 的 Cloudflare KV 中。
 
+### 定时触发器检查
+
+Cloudflare 的 Worker 代码版本和 Cron Trigger 是两类配置。部分一键部署或 Workers Builds 流程可能只上传 Worker 代码，没有把 `wrangler.jsonc` 里的 `triggers.crons` 同步成真实的 Cron Trigger。遇到这种情况时，页面可以正常访问，手动签到也可以执行，但定时签到不会按时触发。
+
+部署完成后，请在 Cloudflare Dashboard 里打开这个 Worker，进入 Settings -> Triggers -> Cron Triggers，确认存在：
+
+```text
+* * * * *
+```
+
+如果没有看到 Cron Trigger，可以在本地登录 Wrangler 后执行：
+
+```bash
+npx wrangler triggers deploy --name taygedo-daily-attendance --triggers "* * * * *"
+```
+
+Wrangler 返回 `schedule: * * * * *` 后，触发器通常会在几分钟内生效；Cloudflare 官方说明触发器变更最多可能需要约 15 分钟传播。线上实际定时逻辑仍由页面里的时间控制：Worker 每分钟被唤醒一次，代码会按 `Asia/Shanghai` 时区判断是否到了配置的签到时间，并且每天最多执行一次。
+
 ### 手动部署
 
 ```bash
 npm install
 npm run deploy
+npx wrangler triggers deploy --name taygedo-daily-attendance --triggers "* * * * *"
 ```
 
 部署脚本会先尝试复用已有 KV：
